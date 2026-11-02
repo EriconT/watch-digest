@@ -1,0 +1,232 @@
+<title>Kinetic Watch Digest</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow reading column; a summary header, then three ranked sections of listing rows (photo, facts, profit chip). */
+:root{
+  --bg:#f5f6f8; --surface:#ffffff; --fg:#1b2433; --muted:#5d6878; --faint:#8b95a5; --line:#e2e6ec;
+  --accent:#23354f; --link:#1f5fa8;
+  --good-bg:#e3f2e6; --good-fg:#1c6b34; --warn-bg:#fbf0d9; --warn-fg:#8a5a06; --hot:#b3261e; --chip-bg:#eef1f5; --new-bg:#e7f5ea;
+  --sans:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11161e; --surface:#19202b; --fg:#e6eaf0; --muted:#a3adbb; --faint:#7a8494; --line:#2a3340;
+  --accent:#9db4d6; --link:#8ab8f0;
+  --good-bg:#16351f; --good-fg:#8fd6a2; --warn-bg:#3a2c0f; --warn-fg:#efc770; --hot:#f08a82; --chip-bg:#232c39; --new-bg:#17311f;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11161e; --surface:#19202b; --fg:#e6eaf0; --muted:#a3adbb; --faint:#7a8494; --line:#2a3340;
+  --accent:#9db4d6; --link:#8ab8f0;
+  --good-bg:#16351f; --good-fg:#8fd6a2; --warn-bg:#3a2c0f; --warn-fg:#efc770; --hot:#f08a82; --chip-bg:#232c39; --new-bg:#17311f;
+  color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.45}
+.wrap{max-width:760px;margin:0 auto;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{display:flex;flex-direction:column;gap:4px;margin-bottom:16px}
+.eyebrow{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:500}
+h1{font-size:24px;font-weight:600;color:var(--accent);margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--muted)}
+.meta b{font-family:var(--mono);font-weight:500;color:var(--fg)}
+.notice{font-size:13px;color:var(--warn-fg);background:var(--warn-bg);border-radius:8px;padding:8px 12px;margin-bottom:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px 16px 8px}
+section+section{margin-top:14px}
+.sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 0 6px}
+.sh h2{font-size:14px;font-weight:600;margin:0}
+.sh span{font-size:12px;color:var(--faint)}
+.row{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.row.new{background:var(--new-bg);margin:0 -16px;padding-left:16px;padding-right:16px}
+.newkey{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--new-bg);color:var(--good-fg);font-weight:500}
+.ph{width:72px;height:72px;border-radius:8px;background:var(--chip-bg);overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:11px;text-align:center}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.t{font-size:15px;font-weight:500;margin:0}
+.f{font-size:13px;color:var(--muted);margin:2px 0 0;font-variant-numeric:tabular-nums}
+.f .y{font-family:var(--mono);font-size:12.5px;color:var(--fg)}
+.f .hot{color:var(--hot);font-weight:500}
+.lk{font-size:13px;margin:3px 0 0;display:flex;flex-wrap:wrap;gap:4px 12px;color:var(--faint)}
+.lk a{color:var(--link);text-decoration:none;font-weight:500}
+.lk a:hover,.lk a:focus-visible{text-decoration:underline}
+.plan{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;background:var(--chip-bg);color:var(--muted)}
+.chip{font-family:var(--mono);font-size:13px;font-weight:500;padding:3px 9px;border-radius:999px;white-space:nowrap;background:var(--good-bg);color:var(--good-fg)}
+.chip.w{background:var(--warn-bg);color:var(--warn-fg)}
+.chip.n{background:var(--chip-bg);color:var(--muted);font-family:var(--sans);font-weight:500}
+.foot{font-size:13px;color:var(--muted);margin-top:14px;display:flex;flex-direction:column;gap:4px}
+.foot .r{color:var(--faint)}
+.empty{padding:28px 4px;color:var(--muted);font-size:14px}
+.ctrls{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.seg{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:var(--chip-bg)}
+.seg button{font:inherit;font-size:13px;font-weight:500;border:0;border-radius:999px;padding:6px 14px;background:transparent;color:var(--muted);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:0 0 0 1px var(--line)}
+.seg button:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+.empty b{color:var(--fg)}
+.pass{font:inherit;font-size:12.5px;font-weight:500;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:999px;padding:2px 10px;cursor:pointer}
+.pass:hover{color:var(--fg);border-color:var(--faint)}
+.pass:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+.row.passed{opacity:.55}
+.hidetog{font:inherit;font-size:13px;font-weight:500;border:1px solid var(--line);border-radius:999px;padding:6px 14px;background:var(--surface);color:var(--muted);cursor:pointer}
+.hidetog[aria-pressed="true"]{color:var(--fg);border-color:var(--faint)}
+.hidetog:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+a:focus-visible{outline:2px solid var(--link);outline-offset:2px;border-radius:3px}
+@media (max-width:440px){.row{grid-template-columns:60px minmax(0,1fr)}.ph{width:60px;height:60px}.chip{grid-column:2;justify-self:start}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow" id="eyebrow">Seiko kinetic and AGS</div>
+    <h1 id="title">Kinetic watch digest</h1>
+    <div class="meta" id="meta">Waiting for the latest run…</div>
+    <div class="ctrls">
+      <div class="seg" role="group" aria-label="Market">
+        <button type="button" id="r-jp" aria-pressed="true">Japan</button>
+        <button type="button" id="r-us" aria-pressed="false">US (eBay)</button>
+      </div>
+      <div class="seg" role="group" aria-label="Listing type">
+        <button type="button" id="f-all" aria-pressed="true">All listings</button>
+        <button type="button" id="f-now" aria-pressed="false">Buy now only</button>
+      </div>
+      <button type="button" class="hidetog" id="h-tog" aria-pressed="false">Show hidden listings</button>
+    </div>
+  </header>
+  <div id="notice" class="notice" hidden></div>
+  <div id="content">
+    <div class="card"><div class="empty"><b>Loading the latest digest…</b></div></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const yen=n=>n==null?'':'¥'+Math.round(n).toLocaleString('en-US');
+  const usd=n=>n==null?'':(n<0?'−$':'$')+Math.abs(Math.round(n)).toLocaleString('en-US');
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const safeUrl=u=>/^https:\/\//.test(u||'')?u:null;
+  const safeImg=u=>/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(u||'')?u:null;
+
+  const REG={
+    jp:{doc:'digest/latest',eyebrow:'Seiko kinetic and AGS · Yahoo Auctions and Mercari via Buyee',
+        empty:'The next run fills this page at 6:43am or 7:43pm Los Angeles time.',
+        note:'Choose the Buyee plan before bidding or buying. It can\'t be changed afterward.'},
+    us:{doc:'digest/us',eyebrow:'Seiko kinetic and AGS · eBay, US sellers',
+        empty:'The next run fills this page at 7:23am or 8:23pm Los Angeles time.',
+        note:'Max price includes the seller\'s shipping. Sales tax is added on top in the landed cost.'}
+  };
+  const data={jp:null,us:null}, loaded={jp:false,us:false};
+  let region='jp', nowOnly=false;
+  try{region=localStorage.getItem('jwd-region')==='us'?'us':'jp'}catch(e){}
+  try{nowOnly=localStorage.getItem('jwd-filter')==='now'}catch(e){}
+
+  function row(it,sec,us){
+    const m=us?usd:yen;
+    const img=safeImg(it.thumb);
+    const ph=img?`<img src="${img}" alt="">`:'No photo';
+    const price=us?it.price_usd:it.price_yen, bn=us?it.buy_now_usd:it.buy_now_yen, mx=us?it.max_usd:it.max_yen, ov=us?it.over_usd:it.over_yen;
+    const bits=[esc(it.site||'')];
+    if(price!=null) bits.push(`<span class="y">${m(price)}</span>${it.fixed?' fixed':''}`);
+    if(us){ if(it.ship_usd===0) bits.push('free shipping'); else if(it.ship_usd!=null) bits.push(`+${usd(it.ship_usd)} shipping`); }
+    if(!it.fixed && bn) bits.push(`buy now <span class="y">${m(bn)}</span>`);
+    if(it.bids!=null) bits.push(`${it.bids} bid${it.bids===1?'':'s'}`);
+    if(it.ends) bits.push(`<span class="${it.urgent?'hot':''}">ends ${esc(it.ends)}</span>`);
+    if(it.fixed && !us) bits.push('can sell any moment');
+    if(it.calibers) bits.push('calibers seen: '+esc(it.calibers));
+    if(mx!=null) bits.push(`max <span class="y">${m(mx)}</span>`);
+    const links=[];
+    const b=safeUrl(it.buyee_url), s=safeUrl(it.src_url);
+    if(b) links.push(`<a href="${esc(b)}" target="_blank" rel="noopener">Buyee</a>`);
+    if(s) links.push(`<a href="${esc(s)}" target="_blank" rel="noopener">${esc(it.src_label||'Original')}</a>`);
+    if(it.landed_usd!=null) links.push(`landed ~${usd(it.landed_usd)}`);
+    if(it.plan) links.push(`<span class="plan">${esc(it.plan)}</span>`);
+    const k=pkey(it), isP=passed.has(k);
+    links.push(`<button type="button" class="pass" data-k="${esc(k)}" data-d="${esc(it.desc)}" data-u="${esc(it.src_url||'')}">${isP?'Unhide':'Pass'}</button>`);
+    let chip='';
+    if(sec==='look' && it.profit_usd!=null) chip=`<span class="chip">+${usd(it.profit_usd)}</span>`;
+    else if(sec==='watch' && ov!=null) chip=`<span class="chip w">${m(ov)} over</span>`;
+    else if(sec==='lot') chip=`<span class="chip n">${esc(it.badge||'check photos')}</span>`;
+    return `<div class="row${it.is_new?' new':''}${passed.has(pkey(it))?' passed':''}"><div class="ph">${ph}</div><div style="min-width:0"><p class="t">${esc(it.desc)}</p><p class="f">${bits.join(' · ')}</p><p class="lk">${links.join('')}</p></div>${chip}</div>`;
+  }
+  function section(title,note,items,sec,us){
+    if(!items||!items.length) return '';
+    return `<section class="card"><div class="sh"><h2>${esc(title)}</h2><span>${esc(note||'')}</span></div>${items.map(i=>row(i,sec,us)).join('')}</section>`;
+  }
+  const isNow=it=>!!(it.fixed||it.buy_now_yen||it.buy_now_usd);
+  const pkey=it=>String(it.src_url||it.buyee_url||it.desc||'').replace(/^https?:\/\//,'').replace(/[^A-Za-z0-9_\-~:@+]/g,'_').slice(0,190)||'x';
+  const passed=new Set(); let showHidden=false, dbRef=null;
+  function togglePass(key,desc,url){
+    if(!dbRef) return;
+    const ref=dbRef.collection('passes').doc(key);
+    if(passed.has(key)){passed.delete(key);render();ref.delete().catch(()=>{passed.add(key);render()})}
+    else{passed.add(key);render();ref.set({src_url:url||'',desc:desc||'',at:new Date().toISOString()}).catch(()=>{passed.delete(key);render()})}
+  }
+
+  function syncButtons(){
+    $('r-jp').setAttribute('aria-pressed',String(region==='jp'));$('r-us').setAttribute('aria-pressed',String(region==='us'));
+    $('f-all').setAttribute('aria-pressed',String(!nowOnly));$('f-now').setAttribute('aria-pressed',String(nowOnly));
+    $('h-tog').setAttribute('aria-pressed',String(showHidden));
+    $('h-tog').textContent=showHidden?'Hide passed listings':'Show hidden listings'+(passed.size?` (${passed.size})`:'');
+  }
+  function render(){
+    syncButtons();
+    const R=REG[region], us=region==='us', d=data[region];
+    $('eyebrow').textContent=R.eyebrow;
+    if(!d){
+      $('meta').textContent=loaded[region]?'No run has finished yet.':'Waiting for the latest run…';
+      $('notice').hidden=true;
+      $('content').innerHTML=`<div class="card"><div class="empty"><b>No digest yet.</b> ${esc(R.empty)} Each listing shows its photo, price, your max and a link.</div></div>`;
+      return;
+    }
+    const when=[d.date_label,d.run_label].filter(Boolean).join(', ');
+    $('meta').innerHTML=`${esc(when)}${!us&&d.rate?` · rate <b>¥${esc(d.rate)}/$</b>`:''}${us&&d.tax!=null?` · sales tax <b>${esc(Math.round(d.tax*1000)/10)}%</b>`:''}${d.updated_label?` · updated ${esc(d.updated_label)}`:''}${['look','watch','lots'].some(s=>(d[s]||[]).some(i=>i.is_new))?` · <span class="newkey">new since last run</span>`:''}`;
+    const n=$('notice');
+    if(d.status && d.status!=='ok'){n.textContent=d.message||'The last run could not finish.';n.hidden=false}else n.hidden=true;
+    const c=d.counts||{};
+    let hiddenN=0;
+    const pick=a=>(a||[]).filter(it=>{if(nowOnly&&!isNow(it))return false;if(passed.has(pkey(it))){hiddenN++;return showHidden}return true});
+    const look=pick(d.look), watch=pick(d.watch), lots=pick(d.lots);
+    let html='';
+    if(!look.length&&!watch.length&&!lots.length){
+      html=nowOnly
+        ? `<div class="card"><div class="empty"><b>No buy-now listings this run.</b> Switch to All listings to see the auctions.</div></div>`
+        : `<div class="card"><div class="empty"><b>Nothing under your max this run.</b></div></div>`;
+    } else if(nowOnly){
+      html+=section('Worth a look',`${look.length} buy now, best profit first`,look,'look',us);
+      html+=section('Watching',`${watch.length} buy now`,watch,'watch',us);
+      html+=section('Lots',`${lots.length} buy now`,lots,'lot',us);
+    } else {
+      html+=section('Worth a look',`top ${look.length} of ${c.look_total??look.length}, best profit first`,look,'look',us);
+      html+=section('Watching',`${watch.length} of ${c.watch_total??watch.length}, ending soonest`,watch,'watch',us);
+      html+=section('Lots',`${lots.length} of ${c.lot_total??lots.length}, cheapest per watch`,lots,'lot',us);
+    }
+    const foot=[];
+    if(hiddenN&&!showHidden) foot.push(`<div>${hiddenN} passed listing${hiddenN===1?'':'s'} hidden.</div>`);
+    if(d.not_shown) foot.push(`<div>${esc(d.not_shown)}</div>`);
+    if(d.skipped) foot.push(`<div>${esc(d.skipped)}</div>`);
+    foot.push(`<div class="r">${esc(R.note)}</div>`);
+    html+=`<div class="foot">${foot.join('')}</div>`;
+    $('content').innerHTML=html;
+  }
+  function setRegion(r){region=r;try{localStorage.setItem('jwd-region',r)}catch(e){}render()}
+  function setFilter(v){nowOnly=v;try{localStorage.setItem('jwd-filter',v?'now':'all')}catch(e){}render()}
+  $('r-jp').addEventListener('click',()=>setRegion('jp'));
+  $('r-us').addEventListener('click',()=>setRegion('us'));
+  $('f-all').addEventListener('click',()=>setFilter(false));
+  $('f-now').addEventListener('click',()=>setFilter(true));
+  $('h-tog').addEventListener('click',()=>{showHidden=!showHidden;render()});
+  $('content').addEventListener('click',e=>{const b=e.target.closest('.pass');if(b)togglePass(b.dataset.k,b.dataset.d,b.dataset.u)});
+  render();
+
+  (async()=>{
+    let db=null;
+    try{db=await window.claude?.use?.('db')}catch(e){}
+    if(!db){$('meta').textContent='Sign in to claude.ai to see the latest digest.';return}
+    dbRef=db;
+    db.collection('passes').onSnapshot(snap=>{passed.clear();snap.docs.forEach(x=>passed.add(x.id));render()},()=>{});
+    for(const r of ['jp','us']){
+      let timer=setTimeout(()=>{if(region===r&&!data[r])$('meta').textContent='Can’t reach the latest digest yet. It may be out of date.'},10000);
+      db.doc(REG[r].doc).onSnapshot(snap=>{
+        if(!snap.metadata.fromCache){clearTimeout(timer);loaded[r]=true}
+        data[r]=snap.exists?snap.data():null;
+        if(region===r) render();
+      },err=>{clearTimeout(timer);if(region===r)$('meta').textContent='The digest couldn’t be loaded. Reopen the page to try again.'});
+    }
+  })();
+})();
+</script>
