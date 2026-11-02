@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2026-11-02
+- Page version 6: the US empty-state text now gives the correct run times (6:43am or 7:43pm).
 - Moved the project into this repo. The page source and task instructions match what's live: page version 5, and the task prompt as of 2026-11-02 3:27pm PT.
 - Worth a look raised from 15 to 24 listings per market.
 - Added the Pass button and the "Show hidden listings" toggle (stored in the page's `passes` collection).

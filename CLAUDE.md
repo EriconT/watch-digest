@@ -76,5 +76,4 @@ Google Sheet ──read──> Scheduled task ──writes──> digest data �
 - **Buyee plans:** Lite (free) under ¥8,000; Standard (¥500) at ¥8,000 and over, and for lots. Standard lowers the max bid by ¥500.
 
 ## Known issues
-- The US empty-state text on the page still says the run is at "7:23am or 8:23pm". It should be "6:43am or 7:43pm" since the two tasks were merged.
 - Watch whether the eBay side over-filters (few results, many skips).
