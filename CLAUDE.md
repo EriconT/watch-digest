@@ -73,6 +73,7 @@ Google Sheet ──read──> Scheduled task ──writes──> digest data �
 - **Chrome tool output:** capped at about 1,000 characters, and URLs with query strings are redacted. Keep `javascript_tool` output compact and parse with `fetch()` + DOMParser inside the tab.
 - **Yahoo search pages:** contain a `__NEXT_DATA__` JSON with auctionId, price, bids, buy-now price, end time and image.
 - **Photos:** go through `/tmp/add_thumbs.py`, which is embedded in the prompt. Its hosts are allowlisted in the cloud workspace: `auc-pctr.c.yimg.jp`, `static.mercdn.net`, `i.ebayimg.com`.
+- **Dead listings:** Yahoo search results can include listings whose item page is gone. Step A5a fetches each shown listing's Yahoo page (from page.auctions.yahoo.co.jp) and Buyee page (from buyee.jp) in the tab and drops the dead ones.
 - **Buyee plans:** Lite (free) under ¥8,000; Standard (¥500) at ¥8,000 and over, and for lots. Standard lowers the max bid by ¥500.
 
 ## Known issues

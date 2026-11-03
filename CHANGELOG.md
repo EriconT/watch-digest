@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-03
+- Japan: new step A5a checks each listing's Yahoo page and Buyee page before it's shown, and drops dead ones ("page not found"), filling the gap with the next runner-up. Prompted by a 5M85 Sportura listing that kept appearing but led to a missing page.
+
 ## 2026-11-02
 - Page version 6: the US empty-state text now gives the correct run times (6:43am or 7:43pm).
 - Moved the project into this repo. The page source and task instructions match what's live: page version 5, and the task prompt as of 2026-11-02 3:27pm PT.
