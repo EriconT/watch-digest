@@ -55,7 +55,7 @@ section+section{margin-top:14px}
 .empty{padding:28px 4px;color:var(--muted);font-size:14px}
 .ctrls{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .seg{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:var(--chip-bg)}
-.seg button{font:inherit;font-size:13px;font-weight:500;border:0;border-radius:999px;padding:6px 14px;background:transparent;color:var(--muted);cursor:pointer}
+.seg button{font:inherit;font-size:13px;font-weight:500;border:0;border-radius:999px;padding:6px 12px;background:transparent;color:var(--muted);cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:0 0 0 1px var(--line)}
 .seg button:focus-visible{outline:2px solid var(--link);outline-offset:2px}
 .empty b{color:var(--fg)}
@@ -63,11 +63,12 @@ section+section{margin-top:14px}
 .pass:hover{color:var(--fg);border-color:var(--faint)}
 .pass:focus-visible{outline:2px solid var(--link);outline-offset:2px}
 .row.passed{opacity:.55}
-.hidetog{font:inherit;font-size:13px;font-weight:500;border:1px solid var(--line);border-radius:999px;padding:6px 14px;background:var(--surface);color:var(--muted);cursor:pointer}
+.hidetog{font:inherit;font-size:13px;font-weight:500;border:1px solid var(--line);border-radius:999px;padding:6px 12px;background:var(--surface);color:var(--muted);cursor:pointer}
 .hidetog[aria-pressed="true"]{color:var(--fg);border-color:var(--faint)}
 .hidetog:focus-visible{outline:2px solid var(--link);outline-offset:2px}
-.sortw{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
-.sortw select{font:inherit;font-size:13px;font-weight:500;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}
+.sortw{margin-left:auto;display:inline-flex;align-items:center}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sortw select{font:inherit;font-size:13px;font-weight:500;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 10px;cursor:pointer}
 .sortw select:focus-visible{outline:2px solid var(--link);outline-offset:2px}
 a:focus-visible{outline:2px solid var(--link);outline-offset:2px;border-radius:3px}
 @media (max-width:440px){.row{grid-template-columns:60px minmax(0,1fr)}.ph{width:60px;height:60px}.chip{grid-column:2;justify-self:start}}
@@ -88,11 +89,11 @@ a:focus-visible{outline:2px solid var(--link);outline-offset:2px;border-radius:3
         <button type="button" id="f-now" aria-pressed="false">Buy now only</button>
       </div>
       <button type="button" class="hidetog" id="h-tog" aria-pressed="false">Show hidden listings</button>
-      <label class="sortw">Sort
+      <label class="sortw"><span class="vh">Sort</span>
         <select id="sort">
           <option value="profit">Best profit first</option>
-          <option value="landed-desc">Landed price high-to-low</option>
           <option value="landed-asc">Landed price low-to-high</option>
+          <option value="landed-desc">Landed price high-to-low</option>
           <option value="end">Auction end</option>
         </select>
       </label>

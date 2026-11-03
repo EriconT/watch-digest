@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2026-11-03
+- Page version 8: "Landed price low-to-high" now comes before "high-to-low" in the Sort menu. The menu now sits on the same line as the other controls on a wide screen (dropped the visible "Sort" word and trimmed button padding).
 - Page version 7: new Sort dropdown on the right of the controls: Best profit first (default), Landed price high-to-low, Landed price low-to-high, Auction end. Sorts within each section; the choice is remembered (`jwd-sort`). Listings without a value (no landed price, or fixed-price for Auction end) go last.
 - Task: each item now also carries "ends_at", the exact end time in ISO 8601, so Auction end sorts precisely. Until the live task is updated, the page reads the "Tue 6:05am" label instead.
 - CLAUDE.md: anything that needs the Cowork side is handed over as one ready-to-paste prompt for a new Cowork chat.
