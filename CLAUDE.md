@@ -32,7 +32,12 @@ Google Sheet ──read──> Scheduled task ──writes──> digest data �
 - Its full instructions are in `task/prompt.md`. To change them:
   1. Edit that file.
   2. Commit.
-  3. Push the whole file to the task with `update_trigger` (same trigger ID, `prompt` = file contents).
+  3. Push the branch.
+  4. From a cloud Claude Code session, `update_trigger` with a new prompt is refused (`needs_device_approval`), because the task is bound to ENRICOPC. Don't attempt it. Instead, end your reply with **one ready-to-paste prompt** in a code block for the owner to paste as-is into a new Cowork chat. That's the only step. Don't give alternatives or extra instructions. Use this form, filling in the branch:
+     ```
+     Update my scheduled task "Watch digest Update" (trig_01QgRZ3NbgRTeFKYaaXJ3NWG): set its prompt to the full contents of task/prompt.md on branch <branch> of the GitHub repo EriconT/watch-digest. Change nothing else, and don't edit or commit anything in the repo. Then confirm with get_trigger that the live prompt matches the file.
+     ```
+  - The same applies to anything else that has to be done on the Cowork side: one self-contained prompt to paste into a new Cowork chat, nothing more.
 - The task's own push setting is OFF on purpose. The prompt sends exactly one PushNotification at the end of each run. The notification setting can only be set when a task is created.
 - Deleting the task's entry in the claude.ai sidebar deletes the task itself. Warn the owner about this if it comes up.
 
@@ -60,6 +65,7 @@ Google Sheet ──read──> Scheduled task ──writes──> digest data �
   - Choices are remembered in localStorage (`jwd-region`, `jwd-filter`).
 
 ## Owner's standing rules
+- When something needs the Cowork side, give the owner one prompt to paste as-is into a new Cowork chat. Just that one step (see Scheduled task, step 4).
 - Never bid, buy, make offers, or sign in to any site. Every purchase needs the owner's explicit approval of the specific item and amount, and he does it himself.
 - Scheduled runs are read-only except for writing the two digest documents. If Chrome is unavailable, the run uses no other browser.
 - Send exactly one notification per run, when the whole run is finished.
@@ -73,6 +79,7 @@ Google Sheet ──read──> Scheduled task ──writes──> digest data �
 - **Chrome tool output:** capped at about 1,000 characters, and URLs with query strings are redacted. Keep `javascript_tool` output compact and parse with `fetch()` + DOMParser inside the tab.
 - **Yahoo search pages:** contain a `__NEXT_DATA__` JSON with auctionId, price, bids, buy-now price, end time and image.
 - **Photos:** go through `/tmp/add_thumbs.py`, which is embedded in the prompt. Its hosts are allowlisted in the cloud workspace: `auc-pctr.c.yimg.jp`, `static.mercdn.net`, `i.ebayimg.com`.
+- **Dead listings:** Yahoo search results can include listings whose item page is gone. Step A5a fetches each shown listing's Yahoo page (from page.auctions.yahoo.co.jp) and Buyee page (from buyee.jp) in the tab and drops the dead ones.
 - **Buyee plans:** Lite (free) under ¥8,000; Standard (¥500) at ¥8,000 and over, and for lots. Standard lowers the max bid by ¥500.
 
 ## Known issues
