@@ -62,7 +62,8 @@ Google Sheet ──read──> Scheduled task ──writes──> digest data �
   - "Buy now only" filter.
   - Light green highlight on listings that weren't in the previous run.
   - Pass button, plus a "Show hidden listings" toggle.
-  - Choices are remembered in localStorage (`jwd-region`, `jwd-filter`).
+  - Sort dropdown: Best profit first (default), landed price high-to-low / low-to-high, auction end (uses `ends_at`, falls back to the `ends` label).
+  - Choices are remembered in localStorage (`jwd-region`, `jwd-filter`, `jwd-sort`).
 
 ## Owner's standing rules
 - When something needs the Cowork side, give the owner one prompt to paste as-is into a new Cowork chat. Just that one step (see Scheduled task, step 4).

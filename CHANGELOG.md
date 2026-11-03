@@ -1,6 +1,8 @@
 # Changelog
 
 ## 2026-11-03
+- Page version 7: new Sort dropdown on the right of the controls: Best profit first (default), Landed price high-to-low, Landed price low-to-high, Auction end. Sorts within each section; the choice is remembered (`jwd-sort`). Listings without a value (no landed price, or fixed-price for Auction end) go last.
+- Task: each item now also carries "ends_at", the exact end time in ISO 8601, so Auction end sorts precisely. Until the live task is updated, the page reads the "Tue 6:05am" label instead.
 - CLAUDE.md: anything that needs the Cowork side is handed over as one ready-to-paste prompt for a new Cowork chat.
 - Japan: new step A5a checks each listing's Yahoo page and Buyee page before it's shown, and drops dead ones ("page not found"), filling the gap with the next runner-up. Prompted by a 5M85 Sportura listing that kept appearing but led to a missing page.
 - Task: fixed a blank "New Tab" left open in Chrome after each run. Setup now reuses the blank tab Claude's tab group starts with, and Part C closes every tab in that group. Applied to the live task by the owner.

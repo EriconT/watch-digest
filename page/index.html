@@ -66,6 +66,9 @@ section+section{margin-top:14px}
 .hidetog{font:inherit;font-size:13px;font-weight:500;border:1px solid var(--line);border-radius:999px;padding:6px 14px;background:var(--surface);color:var(--muted);cursor:pointer}
 .hidetog[aria-pressed="true"]{color:var(--fg);border-color:var(--faint)}
 .hidetog:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+.sortw{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.sortw select{font:inherit;font-size:13px;font-weight:500;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}
+.sortw select:focus-visible{outline:2px solid var(--link);outline-offset:2px}
 a:focus-visible{outline:2px solid var(--link);outline-offset:2px;border-radius:3px}
 @media (max-width:440px){.row{grid-template-columns:60px minmax(0,1fr)}.ph{width:60px;height:60px}.chip{grid-column:2;justify-self:start}}
 </style>
@@ -85,6 +88,14 @@ a:focus-visible{outline:2px solid var(--link);outline-offset:2px;border-radius:3
         <button type="button" id="f-now" aria-pressed="false">Buy now only</button>
       </div>
       <button type="button" class="hidetog" id="h-tog" aria-pressed="false">Show hidden listings</button>
+      <label class="sortw">Sort
+        <select id="sort">
+          <option value="profit">Best profit first</option>
+          <option value="landed-desc">Landed price high-to-low</option>
+          <option value="landed-asc">Landed price low-to-high</option>
+          <option value="end">Auction end</option>
+        </select>
+      </label>
     </div>
   </header>
   <div id="notice" class="notice" hidden></div>
@@ -114,6 +125,36 @@ a:focus-visible{outline:2px solid var(--link);outline-offset:2px;border-radius:3
   let region='jp', nowOnly=false;
   try{region=localStorage.getItem('jwd-region')==='us'?'us':'jp'}catch(e){}
   try{nowOnly=localStorage.getItem('jwd-filter')==='now'}catch(e){}
+  const SORTS={'profit':'','landed-desc':'landed price high to low','landed-asc':'landed price low to high','end':'ending soonest'};
+  let sortBy='profit';
+  try{const v=localStorage.getItem('jwd-sort');if(v&&v in SORTS)sortBy=v}catch(e){}
+
+  // Minutes from a reference point (12 hours ago, LA time) to an item's end; null if it has none.
+  // Uses "ends_at" when the task provides it, else reads the "Tue 6:05am" label.
+  const DAYS=['sun','mon','tue','wed','thu','fri','sat'];
+  function laWeekMinutes(t){
+    const p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Los_Angeles',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(t).forEach(x=>p[x.type]=x.value);
+    return DAYS.indexOf(p.weekday.toLowerCase().slice(0,3))*1440+(+p.hour%24)*60+(+p.minute);
+  }
+  function endKey(it,ref){
+    if(it.ends_at){const t=Date.parse(it.ends_at);if(!isNaN(t))return (t-ref)/60000}
+    const m=/^\s*(sun|mon|tue|wed|thu|fri|sat)\w*\.?\s+(\d{1,2}):(\d{2})\s*(am|pm)/i.exec(it.ends||'');
+    if(!m) return null;
+    const tgt=DAYS.indexOf(m[1].toLowerCase())*1440+((+m[2]%12)+(m[4].toLowerCase()==='pm'?12:0))*60+(+m[3]);
+    return ((tgt-laWeekMinutes(ref))%10080+10080)%10080;
+  }
+  function sorted(items){
+    if(sortBy==='profit') return items;
+    const ref=Date.now()-12*3600e3;
+    const key=sortBy==='end'?(it=>endKey(it,ref)):(it=>it.landed_usd);
+    const dir=sortBy==='landed-desc'?-1:1;
+    // Stable: items without a value keep their original order at the end.
+    return items.map((it,i)=>({it,i,k:key(it)})).sort((a,b)=>{
+      const an=a.k==null,bn=b.k==null;
+      if(an||bn) return an&&bn?a.i-b.i:(an?1:-1);
+      return (a.k-b.k)*dir||a.i-b.i;
+    }).map(x=>x.it);
+  }
 
   function row(it,sec,us){
     const m=us?usd:yen;
@@ -161,6 +202,7 @@ a:focus-visible{outline:2px solid var(--link);outline-offset:2px;border-radius:3
     $('r-jp').setAttribute('aria-pressed',String(region==='jp'));$('r-us').setAttribute('aria-pressed',String(region==='us'));
     $('f-all').setAttribute('aria-pressed',String(!nowOnly));$('f-now').setAttribute('aria-pressed',String(nowOnly));
     $('h-tog').setAttribute('aria-pressed',String(showHidden));
+    $('sort').value=sortBy;
     $('h-tog').textContent=showHidden?'Hide passed listings':'Show hidden listings'+(passed.size?` (${passed.size})`:'');
   }
   function render(){
@@ -180,20 +222,21 @@ a:focus-visible{outline:2px solid var(--link);outline-offset:2px;border-radius:3
     const c=d.counts||{};
     let hiddenN=0;
     const pick=a=>(a||[]).filter(it=>{if(nowOnly&&!isNow(it))return false;if(passed.has(pkey(it))){hiddenN++;return showHidden}return true});
-    const look=pick(d.look), watch=pick(d.watch), lots=pick(d.lots);
+    const look=sorted(pick(d.look)), watch=sorted(pick(d.watch)), lots=sorted(pick(d.lots));
+    const so=s=>SORTS[sortBy]||s;
     let html='';
     if(!look.length&&!watch.length&&!lots.length){
       html=nowOnly
         ? `<div class="card"><div class="empty"><b>No buy-now listings this run.</b> Switch to All listings to see the auctions.</div></div>`
         : `<div class="card"><div class="empty"><b>Nothing under your max this run.</b></div></div>`;
     } else if(nowOnly){
-      html+=section('Worth a look',`${look.length} buy now, best profit first`,look,'look',us);
-      html+=section('Watching',`${watch.length} buy now`,watch,'watch',us);
-      html+=section('Lots',`${lots.length} buy now`,lots,'lot',us);
+      html+=section('Worth a look',`${look.length} buy now, ${so('best profit first')}`,look,'look',us);
+      html+=section('Watching',`${watch.length} buy now${sortBy==='profit'?'':', '+so('')}`,watch,'watch',us);
+      html+=section('Lots',`${lots.length} buy now${sortBy==='profit'?'':', '+so('')}`,lots,'lot',us);
     } else {
-      html+=section('Worth a look',`top ${look.length} of ${c.look_total??look.length}, best profit first`,look,'look',us);
-      html+=section('Watching',`${watch.length} of ${c.watch_total??watch.length}, ending soonest`,watch,'watch',us);
-      html+=section('Lots',`${lots.length} of ${c.lot_total??lots.length}, cheapest per watch`,lots,'lot',us);
+      html+=section('Worth a look',`top ${look.length} of ${c.look_total??look.length}, ${so('best profit first')}`,look,'look',us);
+      html+=section('Watching',`${watch.length} of ${c.watch_total??watch.length}, ${so('ending soonest')}`,watch,'watch',us);
+      html+=section('Lots',`${lots.length} of ${c.lot_total??lots.length}, ${so('cheapest per watch')}`,lots,'lot',us);
     }
     const foot=[];
     if(hiddenN&&!showHidden) foot.push(`<div>${hiddenN} passed listing${hiddenN===1?'':'s'} hidden.</div>`);
@@ -210,6 +253,7 @@ a:focus-visible{outline:2px solid var(--link);outline-offset:2px;border-radius:3
   $('f-all').addEventListener('click',()=>setFilter(false));
   $('f-now').addEventListener('click',()=>setFilter(true));
   $('h-tog').addEventListener('click',()=>{showHidden=!showHidden;render()});
+  $('sort').addEventListener('change',e=>{sortBy=e.target.value in SORTS?e.target.value:'profit';try{localStorage.setItem('jwd-sort',sortBy)}catch(x){}render()});
   $('content').addEventListener('click',e=>{const b=e.target.closest('.pass');if(b)togglePass(b.dataset.k,b.dataset.d,b.dataset.u)});
   render();
 
