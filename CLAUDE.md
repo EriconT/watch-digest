@@ -33,6 +33,7 @@ Google Sheet ──read──> Scheduled task ──writes──> digest data �
   1. Edit that file.
   2. Commit.
   3. Push the whole file to the task with `update_trigger` (same trigger ID, `prompt` = file contents).
+     Because the task is bound to ENRICOPC, a new prompt only takes effect after the owner approves it on that computer (in a Cowork conversation linked to ENRICOPC) or pastes it into the task himself in the desktop app. Then confirm with `get_trigger` that the live prompt matches the file.
 - The task's own push setting is OFF on purpose. The prompt sends exactly one PushNotification at the end of each run. The notification setting can only be set when a task is created.
 - Deleting the task's entry in the claude.ai sidebar deletes the task itself. Warn the owner about this if it comes up.
 
