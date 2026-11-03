@@ -2,6 +2,9 @@
 
 ## 2026-11-03
 - Japan: new step A5a checks each listing's Yahoo page and Buyee page before it's shown, and drops dead ones ("page not found"), filling the gap with the next runner-up. Prompted by a 5M85 Sportura listing that kept appearing but led to a missing page.
+- Task: fixed a blank "New Tab" left open in Chrome after each run. Setup now reuses the blank tab Claude's tab group starts with, and Part C closes every tab in that group. Applied to the live task by the owner.
+- CLAUDE.md: noted that prompt changes need the owner's approval on ENRICOPC.
+- Merged the A5a live check and the tab fix into one prompt, so the live task has both.
 
 ## 2026-11-02
 - Page version 6: the US empty-state text now gives the correct run times (6:43am or 7:43pm).
