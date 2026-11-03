@@ -32,8 +32,12 @@ Google Sheet ──read──> Scheduled task ──writes──> digest data �
 - Its full instructions are in `task/prompt.md`. To change them:
   1. Edit that file.
   2. Commit.
-  3. Push the whole file to the task with `update_trigger` (same trigger ID, `prompt` = file contents).
-     Because the task is bound to ENRICOPC, a new prompt only takes effect after the owner approves it on that computer (in a Cowork conversation linked to ENRICOPC) or pastes it into the task himself in the desktop app. Then confirm with `get_trigger` that the live prompt matches the file.
+  3. Push the branch.
+  4. From a cloud Claude Code session, `update_trigger` with a new prompt is refused (`needs_device_approval`), because the task is bound to ENRICOPC. Don't attempt it. Instead, end your reply with **one ready-to-paste prompt** in a code block for the owner to paste as-is into a new Cowork chat. That's the only step. Don't give alternatives or extra instructions. Use this form, filling in the branch:
+     ```
+     Update my scheduled task "Watch digest Update" (trig_01QgRZ3NbgRTeFKYaaXJ3NWG): set its prompt to the full contents of task/prompt.md on branch <branch> of the GitHub repo EriconT/watch-digest. Change nothing else, and don't edit or commit anything in the repo. Then confirm with get_trigger that the live prompt matches the file.
+     ```
+  - The same applies to anything else that has to be done on the Cowork side: one self-contained prompt to paste into a new Cowork chat, nothing more.
 - The task's own push setting is OFF on purpose. The prompt sends exactly one PushNotification at the end of each run. The notification setting can only be set when a task is created.
 - Deleting the task's entry in the claude.ai sidebar deletes the task itself. Warn the owner about this if it comes up.
 
@@ -61,6 +65,7 @@ Google Sheet ──read──> Scheduled task ──writes──> digest data �
   - Choices are remembered in localStorage (`jwd-region`, `jwd-filter`).
 
 ## Owner's standing rules
+- When something needs the Cowork side, give the owner one prompt to paste as-is into a new Cowork chat. Just that one step (see Scheduled task, step 4).
 - Never bid, buy, make offers, or sign in to any site. Every purchase needs the owner's explicit approval of the specific item and amount, and he does it himself.
 - Scheduled runs are read-only except for writing the two digest documents. If Chrome is unavailable, the run uses no other browser.
 - Send exactly one notification per run, when the whole run is finished.
