@@ -6,7 +6,7 @@ Notifications: send exactly ONE push notification per run, with the PushNotifica
 
 SETUP
 - Read my targets once. In my Google Sheet "Watch Flipping Tracker" (spreadsheet ID 1Qu6cx2y_0R5iSvuouoD7dodNk27Ij31Goaa3JA1KZuE), read tab 'Caliber targets' range A4:P60 with the Google Sheets get_values tool. Assumptions: B5 = yen per dollar, B10 = US duty on Japan buys, B12 = parts per watch ($), B13 = eBay fee share, B14 = shipping out ($), B15 = minimum profit ($), B16 = Japan fixed costs per watch ($), F5 = US sales tax, F6 = default inbound shipping ($) for eBay listings that don't show it. From row 19 down, each row is Caliber (A), Version (B), eBay median sale in USD (E), Japan max bid in yen (K), Japan verdict (L), US max price incl. shipping in USD (O), US verdict (P).
-- Load the chrome-browser skill, then the Chrome tools in one ToolSearch call (include javascript_tool and navigate). Call tabs_context_mcp and open one new tab; work only in that tab for both parts. Chrome tool output is cut off at about 1,000 characters and URLs with query strings are hidden, so always return compact text, a few lines per call.
+- Load the chrome-browser skill, then the Chrome tools in one ToolSearch call (include javascript_tool and navigate). Call tabs_context_mcp (with createIfEmpty). If its tab group already holds a blank tab (New Tab / about:blank), use that tab; only if it has none, open one new tab with tabs_create_mcp. Work only in that one tab for both parts, and note its tab ID. Chrome tool output is cut off at about 1,000 characters and URLs with query strings are hidden, so always return compact text, a few lines per call.
 - Load ArtifactData and PushNotification with ToolSearch ("select:ArtifactData,PushNotification"). The page is https://claude.ai/artifact/3tZ2eidxkhKx8cyMK2NfjW.
 - Write the script below to /tmp/add_thumbs.py exactly as shown (if PIL is missing, run: pip install --break-system-packages pillow). Usage: python3 /tmp/add_thumbs.py <in.json> <out.json> <previous.json>. It fills each item's "thumb" from its "img_url", removes "img_url", and sets "is_new" to true for every listing that was not in the previous digest (compared by src_url), so the page can highlight new listings. Failed photos stay null. Run it at most once per part.
 
@@ -83,7 +83,7 @@ B7. "set" doc_id "us" with file_path "/tmp/us_out.json" and if_version set to th
    If nothing qualifies, publish empty arrays with "message": "Nothing under your max this run."
 
 PART C: FINISH
-C1. Close the tab you opened.
+C1. Close every tab this run left open: call tabs_context_mcp again and close, with tabs_close_mcp, each tab in Claude's tab group (the working tab and any blank New Tab the group started with), so no tab is left open in Chrome. Never close a tab outside that group; those are mine. Do this before C2 even if Part A or B failed.
 C2. Send ONE push notification with the PushNotification tool, as the very last action of the run, for example:
    "Japan: 3 new. Top: 5M62 Scuba ¥12,800 (max ¥17,000, Standard). eBay: 1 new. Top: 5M23 Spirit $61 incl. shipping (max $78). Open the digest: https://claude.ai/artifact/3tZ2eidxkhKx8cyMK2NfjW"
    Use the number of new listings from each script run and the top pick from each market, or "nothing under your max" for that market. Then end with the same text as your final message. Do not send any other messages during the run.

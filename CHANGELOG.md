@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-03
+- Task: fixed a blank "New Tab" left open in Chrome after each run. Setup now reuses the blank tab Claude's tab group starts with, and Part C closes every tab in that group.
+
 ## 2026-11-02
 - Page version 6: the US empty-state text now gives the correct run times (6:43am or 7:43pm).
 - Moved the project into this repo. The page source and task instructions match what's live: page version 5, and the task prompt as of 2026-11-02 3:27pm PT.
